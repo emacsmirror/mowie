@@ -89,15 +89,20 @@
 (defun mowie-beginning-of-comment ()
   "Move point to first character of line that is comment."
   (interactive "^")
-  (end-of-line)
-  (goto-char
-    (let ((syn (syntax-ppss))) (and (nth 4 syn) (nth 8 syn)))))
+  (if-let*
+    ((pos (nth 8 (save-excursion (syntax-ppss (line-end-position))))))
+    (goto-char pos)))
 
 (defun mowie-beginning-of-comment-text ()
   "Move point to first character of line that is text inside comment."
   (interactive "^")
-  (end-of-line)
-  (comment-beginning))
+  (if-let
+    ((pos
+       (save-excursion
+         (beginning-of-line)
+         (when (comment-search-forward (line-end-position) t)
+           (point)))))
+    (goto-char pos)))
 
 ;;;; Mowie
 
