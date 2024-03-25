@@ -73,7 +73,6 @@
 
 (defvar mowie--index nil)
 (defvar mowie--point nil)
-(defvar mowie--command nil)
 
 ;;;; Point-Moving Commands
 
@@ -127,7 +126,6 @@
     ;; case: first invocation of what might become a series.
     (setq mowie--point (point))
     (setq mowie--index 0)
-    (setq mowie--command this-command)
     (call-interactively (car cmds))))
 
 (provide 'mowie)
