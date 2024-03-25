@@ -76,8 +76,8 @@
 
 ;;;; Point-Moving Commands
 
-;; We use "^" code letter for `interactive' so that if
-;; "`shift-select-mode' is non-nil, Emacs first calls the function
+;; we use "^" code letter for `interactive' so that if
+;; "`shift-select-mode' is non-nil, emacs first calls the function
 ;; `handle-shift-selection'" (describe-function 'interactive).
 
 (defun mowie-beginning-of-code ()
