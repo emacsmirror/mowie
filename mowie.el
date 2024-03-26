@@ -104,6 +104,23 @@
            (point)))))
     (goto-char pos)))
 
+(defun mowie-end-of-code ()
+  "Move point to right behind last character of line that is code."
+  (interactive "^")
+  (if-let
+    ((pos
+       (save-excursion
+         (end-of-line)
+         (when-let
+           ((pos
+              (save-excursion
+                (comment-search-backward
+                  (line-beginning-position) t))))
+           (goto-char pos))
+         (skip-syntax-backward " " (line-beginning-position))
+         (point))))
+    (goto-char pos)))
+
 ;;;; Mowie
 
 (defun mowie (&rest cmds)
