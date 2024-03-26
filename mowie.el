@@ -30,7 +30,8 @@
 ;;; Commentary:
 
 ;; `mowie' let's you define smart commands that cycle through the
-;; result of point-moving commands by consecutive repetitions.
+;; result of point-moving commands by consecutive repetitions. It also
+;; offers a few point-moving commands.
 
 ;; For example, let's define an smart alternative commands to
 ;; `beginning-of-line' and `end-of-line':
