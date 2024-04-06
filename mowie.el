@@ -126,35 +126,36 @@
 
 (defun mowie (&rest funs)
   "Cycle through list of point-moving commands by repetition."
-  (cond
-    ;; case: this command is being repeated in a series.
-    ((eq last-command this-command)
-      (when (and mowie--point mowie--index)
-        (let ((last-point (point)) (loop-length 0) (condition t))
-          (while condition
-            (setq mowie--index (% (1+ mowie--index) (length funs)))
-            ;; reset point to where it was before the series.
-            (goto-char mowie--point)
-            ;; call the function; interactively, when appropriate.
-            (let ((fun (nth mowie--index funs)))
-              (if (interactive-form fun)
-                (call-interactively fun)
-                (funcall fun)))
-            ;; keep track of number of iterations.
-            (setq loop-length (1+ loop-length))
-            (setq condition
-              (and
-                (< loop-length (length funs))
-                ;; by checking against `mowie--point', assume that we
-                ;; do not want to go back where point was when the
-                ;; series was started:
-                (member (point) (list last-point mowie--point))))))))
-    ;; case: first invocation of what might become a series.
-    (t
-      ;; TODO: loop here as well!
+  (let ((repeating (eq last-command this-command)))
+    (unless repeating
       (setq mowie--point (point))
-      (setq mowie--index 0)
-      (call-interactively (car funs)))))
+      (setq mowie--index 0))
+    (mowie--cycle funs (and repeating (list (point))))))
+
+(defun mowie--cycle (funs &optional last-point)
+  (let
+    ( (loop-length 0)
+      (loop-max-length (length funs))
+      (condition t)
+      (excluded-positions (cons mowie--point last-point)))
+    (while condition
+      (setq mowie--index (% (1+ mowie--index) (length funs)))
+      ;; reset point to where it was before the series.
+      (goto-char mowie--point)
+      ;; call the function; interactively, when appropriate.
+      (let ((fun (nth mowie--index funs)))
+        (if (interactive-form fun)
+          (call-interactively fun)
+          (funcall fun)))
+      ;; keep track of number of iterations.
+      (setq loop-length (1+ loop-length))
+      (setq condition
+        (and
+          (< loop-length loop-max-length)
+          ;; by checking against `mowie--point', assume that we do not
+          ;; want to go back where point was when the series was
+          ;; started:
+          (member (point) excluded-positions))))))
 
 (provide 'mowie)
 
