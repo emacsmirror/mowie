@@ -131,20 +131,20 @@
 
 (defun mowie (&rest funs)
   "Cycle through list of point-moving functions by repetition."
-  (let ((repetition (eq last-command this-command)))
+  (let*
+    ( (repetition (eq last-command this-command))
+      (loop-length 0)
+      (loop-max-length (length funs))
+      (condition t)
+      (excluded-positions
+        (cons
+          ;; excluding `mowie--point' assumes we do not want to go
+          ;; back where point was right before this repetition.
+          mowie--point
+          (and repetition (list (point))))))
     (unless repetition
       (setq mowie--point (point))
       (setq mowie--index 0))
-    (mowie--cycle funs (and repetition (list (point))))))
-
-(defun mowie--cycle (funs &optional last-point)
-  (let
-    ( (loop-length 0)
-      (loop-max-length (length funs))
-      (condition t)
-      ;; by excluding `mowie--point', we assume that we do not want to
-      ;; go back where point was when the repetition was started.
-      (excluded-positions (cons mowie--point last-point)))
     (while condition
       (setq mowie--index (% (1+ mowie--index) (length funs)))
       ;; reset point to where it was before the series.
