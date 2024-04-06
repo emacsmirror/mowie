@@ -77,7 +77,7 @@
 
 ;;;; Point-Moving Commands
 
-;; we use "^" code letter for `interactive' so that if
+;; pass `^' code-letter to `interactive' so that if
 ;; "`shift-select-mode' is non-nil, emacs first calls the function
 ;; `handle-shift-selection'" (describe-function 'interactive).
 
@@ -124,32 +124,35 @@
 
 ;;;; Mowie
 
-(defun mowie (&rest cmds)
+(defun mowie (&rest funs)
   "Cycle through list of point-moving commands by repetition."
   (if (eq last-command this-command)
     ;; case: this command is being repeated in a series.
     (when (and mowie--point mowie--index)
       (let ((last-point (point)) (loop-length 0) (condition t))
         (while condition
-          (setq mowie--index (% (1+ mowie--index) (length cmds)))
+          (setq mowie--index (% (1+ mowie--index) (length funs)))
           ;; reset point to where it was before the series.
           (goto-char mowie--point)
-          (let ((f (nth mowie--index cmds)))
-            (if (interactive-form f)
-              (call-interactively f)
-              (funcall f)))
+          ;; call the function; interactively, when appropriate.
+          (let ((fun (nth mowie--index funs)))
+            (if (interactive-form fun)
+              (call-interactively fun)
+              (funcall fun)))
+          ;; keep track of number of iterations.
           (setq loop-length (1+ loop-length))
           (setq condition
             (and
-              (< loop-length (length cmds))
+              (< loop-length (length funs))
               ;; by checking against `mowie--point', assume that we do
               ;; not want to go back where point was when the series
               ;; was started:
               (member (point) (list last-point mowie--point)))))))
     ;; case: first invocation of what might become a series.
+    ;; TODO: loop here as well!
     (setq mowie--point (point))
     (setq mowie--index 0)
-    (call-interactively (car cmds))))
+    (call-interactively (car funs))))
 
 (provide 'mowie)
 
