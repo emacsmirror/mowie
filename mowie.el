@@ -68,6 +68,11 @@
 ;; by being opinionated rather than maximizing flexibility; and by not
 ;; providing any macros.
 
+;;; Roadmap:
+
+;; Introduce a user option determining if last-position should be
+;; avoided while repeating.
+
 ;;; Code:
 
 ;;;; Internal State
