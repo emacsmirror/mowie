@@ -48,7 +48,7 @@
 ;; by being opinionated rather than maximizing flexibility; and by not
 ;; providing any (rather opaque) macros.
 
-;;; Examples:
+;;;; Examples:
 
 ;; Cycle through alternatives of `beginning-of-line' and
 ;; `end-of-line'!
@@ -93,10 +93,10 @@
 ;;   (keymap-set message-mode-map "M-<" #'my-beginning-of-message)
 ;;   (keymap-set message-mode-map "M->" #'my-end-of-message)
 
-;;; Roadmap:
+;;;; TODO:
 
-;; Introduce a user option determining if last-position should be
-;; avoided while repeating.
+;; Consider introducing a user option determining if last-position
+;; should be avoided while repeating.
 
 ;; Write tests.
 
@@ -109,8 +109,8 @@
 
 ;;;; Point-Moving Commands
 
-;; pass `^' code-letter to `interactive' so that if
-;; "`shift-select-mode' is non-nil, emacs first calls the function
+;; Pass `^' code-letter to `interactive' so that if
+;; "`shift-select-mode' is non-nil, Emacs first calls the function
 ;; `handle-shift-selection'" (describe-function 'interactive).
 
 (defun mowie-beginning-of-code ()
@@ -147,8 +147,12 @@
          (when-let
            ((pos
               (save-excursion
-                (comment-search-backward
-                  (line-beginning-position) t))))
+                ;; Catch the error that `comment-search-backward'
+                ;; throws when point is not inside a comment.
+                (condition-case nil
+                  (comment-search-backward
+                    (line-beginning-position) t)
+                  (error nil)))))
            (goto-char pos))
          (skip-syntax-backward " " (line-beginning-position))
          (point))))
@@ -165,7 +169,7 @@
       (condition t)
       (excluded-positions
         (cons
-          ;; excluding `mowie--point' assumes we do not want to go
+          ;; Excluding `mowie--point' assumes we do not want to go
           ;; back where point was right before this repetition.
           mowie--point
           (and repetition (list (point))))))
@@ -174,14 +178,14 @@
       (setq mowie--index 0))
     (while condition
       (setq mowie--index (% (1+ mowie--index) (length funs)))
-      ;; reset point to where it was before the series.
+      ;; Reset point to where it was before the series.
       (goto-char mowie--point)
-      ;; call the function; interactively, when appropriate.
+      ;; Call the function; interactively, when appropriate.
       (let ((fun (nth mowie--index funs)))
         (if (interactive-form fun)
           (call-interactively fun)
           (funcall fun)))
-      ;; keep track of number of iterations.
+      ;; Keep track of number of iterations.
       (setq loop-length (1+ loop-length))
       (setq condition
         (and
