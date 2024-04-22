@@ -141,21 +141,22 @@
   "Move point to right behind last character of line that is code."
   (interactive "^")
   (if-let
-    ((pos
-       (save-excursion
-         (end-of-line)
-         (when-let
-           ((pos
-              (save-excursion
-                ;; Catch the error that `comment-search-backward'
-                ;; throws when point is not inside a comment.
-                (condition-case nil
-                  (comment-search-backward
-                    (line-beginning-position) t)
-                  (error nil)))))
-           (goto-char pos))
-         (skip-syntax-backward " " (line-beginning-position))
-         (point))))
+    ( (line-beg-pos (line-beginning-position))
+      (pos
+        (save-excursion
+          (end-of-line)
+          (when-let
+            ((pos
+               (save-excursion
+                 ;; Catch the error that `comment-search-backward'
+                 ;; throws when point is not inside a comment.
+                 (condition-case nil
+                   (comment-search-backward
+                     line-beg-pos t)
+                   (error nil)))))
+            (goto-char pos))
+          (skip-syntax-backward " " (line-beginning-position))
+          (unless (equal (point) line-beg-pos) (point)))))
     (goto-char pos)))
 
 ;;;; Mowie
