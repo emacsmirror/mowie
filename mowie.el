@@ -102,12 +102,12 @@
 
 ;;; Code:
 
-;;;; Internal State
+;;;; Internal State:
 
 (defvar mowie--index nil)
 (defvar mowie--point nil)
 
-;;;; Point-Moving Commands
+;;;; Point-Moving Commands:
 
 ;; Pass `^' code-letter to `interactive' so that if
 ;; "`shift-select-mode' is non-nil, Emacs first calls the function
@@ -159,7 +159,7 @@
           (unless (equal (point) line-beg-pos) (point)))))
     (goto-char pos)))
 
-;;;; Mowie
+;;;; Mowie:
 
 (defun mowie (&rest funs)
   "Cycle through list of point-moving functions by repetition."
