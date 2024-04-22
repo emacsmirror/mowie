@@ -164,19 +164,20 @@
   "Cycle through list of point-moving functions by repetition."
   (let*
     ( (repetition (eq last-command this-command))
-      (loop-length 0)
-      (loop-max-length (length funs))
-      (condition t)
-      (excluded-positions
+      (loop-amount 0)
+      (fun-amount (length funs))
+      (excluded
         (cons
+          ;; Excluding (point) ensures that we do not stay where we
+          ;; started this command, if possible.
           (point)
           ;; Excluding `mowie--point' assumes we do not want to go
           ;; back where point was right before this repetition.
-          (and repetition (list mowie--point)))))
+          (when repetition (list mowie--point)))))
     (unless repetition
       (setq mowie--point (point))
       (setq mowie--index 0))
-    (while condition
+    (while (and (< loop-amount fun-amount) (member (point) excluded))
       ;; Reset point to where it was before the repetition.
       (goto-char mowie--point)
       ;; Call the function; interactively, when appropriate.
@@ -185,12 +186,8 @@
           (call-interactively fun)
           (funcall fun)))
       ;; Prepare next loop.
-      (setq mowie--index (% (1+ mowie--index) (length funs)))
-      (setq loop-length (1+ loop-length))
-      (setq condition
-        (and
-          (< loop-length loop-max-length)
-          (member (point) excluded-positions))))))
+      (setq mowie--index (% (1+ mowie--index) fun-amount))
+      (setq loop-amount (1+ loop-amount)))))
 
 (provide 'mowie)
 
