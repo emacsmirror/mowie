@@ -169,23 +169,23 @@
       (condition t)
       (excluded-positions
         (cons
+          (point)
           ;; Excluding `mowie--point' assumes we do not want to go
           ;; back where point was right before this repetition.
-          mowie--point
-          (and repetition (list (point))))))
+          (and repetition (list mowie--point)))))
     (unless repetition
       (setq mowie--point (point))
       (setq mowie--index 0))
     (while condition
-      (setq mowie--index (% (1+ mowie--index) (length funs)))
-      ;; Reset point to where it was before the series.
+      ;; Reset point to where it was before the repetition.
       (goto-char mowie--point)
       ;; Call the function; interactively, when appropriate.
       (let ((fun (nth mowie--index funs)))
         (if (interactive-form fun)
           (call-interactively fun)
           (funcall fun)))
-      ;; Keep track of number of iterations.
+      ;; Prepare next loop.
+      (setq mowie--index (% (1+ mowie--index) (length funs)))
       (setq loop-length (1+ loop-length))
       (setq condition
         (and
