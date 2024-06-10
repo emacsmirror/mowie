@@ -93,7 +93,7 @@
 ;;   (keymap-set message-mode-map "M-<" #'my-beginning-of-message)
 ;;   (keymap-set message-mode-map "M->" #'my-end-of-message)
 
-;;;; TODO:
+;;;; Roadmap:
 
 ;; Consider introducing a user option determining if last-position
 ;; should be avoided while repeating.
