@@ -4,7 +4,7 @@
 
 ;; Author:                  Mekeor Melire <mekeor@posteo.de>
 ;; Created:                 2024
-;; Homepage:                https://codeberg.org/mekeor/emacs-mowie
+;; Homepage:                https://codeberg.org/mekeor/mowie
 ;; Keywords:                convenience
 ;; Maintainer:              Mekeor Melire <mekeor@posteo.de>
 ;; Package-Requires:        ((emacs "28.1"))
@@ -30,12 +30,12 @@
 ;;; Commentary:
 
 ;; `mowie' let's you define smart commands that cycle through the
-;; result of point-moving commands by consecutive repetitions. The
+;; result of point-moving commands by consecutive repetitions.  The
 ;; package also offers a few point-moving commands.
 
 ;; While repeating the command that you defined using `mowie', it will
 ;; skip those point-moving commands that do not provide a point which
-;; has not been visited in the running repetition so far. In a similar
+;; has not been visited in the running repetition so far.  In a similar
 ;; manner, it currently also avoids the point as it was right before
 ;; the repetition started.
 
@@ -162,7 +162,7 @@
 ;;;; Mowie:
 
 (defun mowie (&rest funs)
-  "Cycle through list of point-moving functions by repetition."
+  "Cycle through list of point-moving functions FUNS by repetition."
   (let*
     ( (repetition (eq last-command this-command))
       (loop-amount 0)
