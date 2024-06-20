@@ -98,7 +98,7 @@
 ;; Consider introducing a user option determining if last-position
 ;; should be avoided while repeating.
 
-;; Write tests.
+;; Make this package work with `multiple-cursors'.
 
 ;;; Code:
 
