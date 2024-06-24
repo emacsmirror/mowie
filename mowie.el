@@ -1,4 +1,4 @@
-;;; mowie.el --- Cycle Through Point-Moving Commands -*- lexical-binding: t; -*-
+;;; mowie.el --- Cycle Through Point-Moving Commands  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2024 Free Software Foundation, Inc.
 
@@ -122,59 +122,55 @@
 (defun mowie-beginning-of-comment ()
   "Move point to first character of line that is comment."
   (interactive "^")
-  (if-let*
-    ((pos (nth 8 (save-excursion (syntax-ppss (line-end-position))))))
-    (goto-char pos)))
+  (if-let
+      ((pos
+        (nth 8 (save-excursion (syntax-ppss (line-end-position))))))
+      (goto-char pos)))
 
 (defun mowie-beginning-of-comment-text ()
   "Move point to first character of line that is text inside comment."
   (interactive "^")
-  (if-let
-    ((pos
-       (save-excursion
-         (beginning-of-line)
-         (when (comment-search-forward (line-end-position) t)
-           (point)))))
-    (goto-char pos)))
+  (if-let ((pos (save-excursion
+                  (beginning-of-line)
+                  (when (comment-search-forward (line-end-position) t)
+                    (point)))))
+      (goto-char pos)))
 
 (defun mowie-end-of-code ()
   "Move point to right behind last character of line that is code."
   (interactive "^")
-  (if-let
-    ( (line-beg-pos (line-beginning-position))
-      (pos
-        (save-excursion
-          (end-of-line)
-          (when-let
-            ((pos
-               (save-excursion
-                 ;; Catch the error that `comment-search-backward'
-                 ;; throws when point is not inside a comment.
-                 (condition-case nil
-                   (comment-search-backward
-                     line-beg-pos t)
-                   (error nil)))))
-            (goto-char pos))
-          (skip-syntax-backward " " (line-beginning-position))
-          (unless (equal (point) line-beg-pos) (point)))))
-    (goto-char pos)))
+  (if-let*
+      ((bol (line-beginning-position))
+       (pos (save-excursion
+              (end-of-line)
+              (when-let
+                  ((pos (save-excursion
+                          ;; Catch the error that
+                          ;; `comment-search-backward' throws when
+                          ;; point is not inside a comment.
+                          (condition-case nil
+                              (comment-search-backward bol t)
+                            (error nil)))))
+                (goto-char pos))
+              (skip-syntax-backward " " (line-beginning-position))
+              (unless (equal (point) bol) (point)))))
+      (goto-char pos)))
 
 ;;;; Mowie:
 
 (defun mowie (&rest funs)
   "Cycle through list of point-moving functions FUNS by repetition."
-  (let*
-    ( (repetition (eq last-command this-command))
-      (loop-amount 0)
-      (fun-amount (length funs))
-      (excluded
-        (cons
-          ;; Excluding (point) ensures that we do not stay where we
-          ;; started this command, if possible.
-          (point)
-          ;; Excluding `mowie--point' assumes we do not want to go
-          ;; back where point was right before this repetition.
-          (when repetition (list mowie--point)))))
+  (let* ((repetition (eq last-command this-command))
+         (loop-amount 0)
+         (fun-amount (length funs))
+         (excluded
+          (cons
+           ;; Excluding (point) ensures that we do not stay where we
+           ;; started this command, if possible.
+           (point)
+           ;; Excluding `mowie--point' assumes we do not want to go
+           ;; back where point was right before this repetition.
+           (when repetition (list mowie--point)))))
     (unless repetition
       (setq mowie--point (point))
       (setq mowie--index 0))
@@ -184,7 +180,7 @@
       ;; Call the function; interactively, when appropriate.
       (let ((fun (nth mowie--index funs)))
         (if (interactive-form fun)
-          (call-interactively fun)
+            (call-interactively fun)
           (funcall fun)))
       ;; Prepare next loop.
       (setq loop-amount (1+ loop-amount))
