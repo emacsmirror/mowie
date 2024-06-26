@@ -43,11 +43,6 @@
 ;; If you want something different, consider copying and modifying the
 ;; code to your liking, or using an alternative package.
 
-;; `mowie' differs from Alex Kost's `mwim' package and from Adam
-;; Porter's `mosey' package by being minimalistic rather than complex;
-;; by being opinionated rather than maximizing flexibility; and by not
-;; providing any (rather opaque) macros.
-
 ;;;; Examples:
 
 ;; Cycle through alternatives of `beginning-of-line' and
@@ -92,6 +87,22 @@
 ;;
 ;;   (keymap-set message-mode-map "M-<" #'my-beginning-of-message)
 ;;   (keymap-set message-mode-map "M->" #'my-end-of-message)
+
+;;;; Alternatives:
+
+;; `mowie' differs from Alex Kost's `mwim' package and from Adam
+;; Porter's `mosey' package by being minimalistic rather than complex;
+;; by being opinionated rather than maximizing flexibility; and by not
+;; providing any (rather opaque) macros.
+
+;; But also `mowie' uses a unique algorithm that is probably not
+;; reproducible with the other packages: First, it will call as few of
+;; the provided position-functions as needed to determine a unique
+;; position that hasn't been visited in the ongoing cycle of
+;; subsequent repetitions.  And then, it will not move the cursor to
+;; the closest determined position, but it will obey the order of
+;; provided position-functions.  This is achieved with the
+;; `this-command' and `last-command' variables.
 
 ;;;; Roadmap:
 
