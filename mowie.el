@@ -195,7 +195,7 @@
           (funcall fun)))
       ;; Prepare next loop.
       (setq loop-amount (1+ loop-amount))
-      ;; Preparse next loop and/or next repetition.
+      ;; Prepare next loop and/or next repetition.
       (setq mowie--index (% (1+ mowie--index) fun-amount)))))
 
 (provide 'mowie)
