@@ -133,7 +133,7 @@
 (defun mowie-beginning-of-comment ()
   "Move point to first character of line that is comment."
   (interactive "^")
-  (if-let
+  (if-let*
       ((pos
         (nth 8 (save-excursion (syntax-ppss (line-end-position))))))
       (goto-char pos)))
@@ -141,10 +141,11 @@
 (defun mowie-beginning-of-comment-text ()
   "Move point to first character of line that is text inside comment."
   (interactive "^")
-  (if-let ((pos (save-excursion
-                  (beginning-of-line)
-                  (when (comment-search-forward (line-end-position) t)
-                    (point)))))
+  (if-let*
+      ((pos (save-excursion
+              (beginning-of-line)
+              (when (comment-search-forward (line-end-position) t)
+                (point)))))
       (goto-char pos)))
 
 (defun mowie-end-of-code ()
@@ -154,7 +155,7 @@
       ((bol (line-beginning-position))
        (pos (save-excursion
               (end-of-line)
-              (when-let
+              (when-let*
                   ((pos (save-excursion
                           ;; Catch the error that
                           ;; `comment-search-backward' throws when
